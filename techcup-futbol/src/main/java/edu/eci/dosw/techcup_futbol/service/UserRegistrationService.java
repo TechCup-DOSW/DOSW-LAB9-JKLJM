@@ -1,14 +1,20 @@
 package edu.eci.dosw.techcup_futbol.service;
 
 import java.util.List;
+import java.util.Set;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.stereotype.Service;
 
 import edu.eci.dosw.techcup_futbol.dtos.RegisterUserDTO;
 import edu.eci.dosw.techcup_futbol.dtos.UserResponseDTO;
+import edu.eci.dosw.techcup_futbol.entity.PermissionEntity;
+import edu.eci.dosw.techcup_futbol.entity.RoleEntity;
 import edu.eci.dosw.techcup_futbol.entity.UserEntity;
 import edu.eci.dosw.techcup_futbol.exceptions.TechCupException;
 import edu.eci.dosw.techcup_futbol.model.UsersAndSecurity.UserRole;
+import edu.eci.dosw.techcup_futbol.repository.RoleRepository;
 import edu.eci.dosw.techcup_futbol.repository.UserRepository;
 
 // Service for user registration and retrieval operations
@@ -16,9 +22,17 @@ import edu.eci.dosw.techcup_futbol.repository.UserRepository;
 public class UserRegistrationService {
 
     private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
+
+    @Autowired
+    public UserRegistrationService(UserRepository userRepository, ObjectProvider<RoleRepository> roleRepositoryProvider) {
+        this.userRepository = userRepository;
+        this.roleRepository = roleRepositoryProvider.getIfAvailable();
+    }
 
     public UserRegistrationService(UserRepository userRepository) {
         this.userRepository = userRepository;
+        this.roleRepository = null;
     }
 
     // Register a new user with validation
@@ -33,11 +47,20 @@ public class UserRegistrationService {
         }
 
         // Create new UserEntity from DTO
+        RoleEntity playerRole;
+        if (roleRepository == null) {
+            playerRole = new RoleEntity();
+            playerRole.setName(UserRole.PLAYER.name());
+        } else {
+            playerRole = roleRepository.findByName(UserRole.PLAYER.name())
+                    .orElseThrow(() -> new TechCupException("Default role PLAYER is not configured"));
+        }
+
         UserEntity user = new UserEntity(
-                dto.getName().trim(),
-                normalizedEmail,
+            dto.getName().trim(),
+            normalizedEmail,
             dto.getPassword(),
-            UserRole.PLAYER
+            Set.of(playerRole)
         );
 
         // Save user to database and convert to response DTO
@@ -138,10 +161,24 @@ public class UserRegistrationService {
 
     // Convert UserEntity to UserResponseDTO (excludes password)
     private UserResponseDTO toResponse(UserEntity userEntity) {
+        List<String> roles = userEntity.getRoles()
+            .stream()
+            .map(RoleEntity::getName)
+            .sorted()
+            .toList();
+
+        List<String> permissions = userEntity.getPermissions()
+            .stream()
+            .map(PermissionEntity::getName)
+            .sorted()
+            .toList();
+
         return new UserResponseDTO(
                 userEntity.getId(),
                 userEntity.getName(),
-                userEntity.getEmail()
+            userEntity.getEmail(),
+            roles,
+            permissions
         );
     }
 }
