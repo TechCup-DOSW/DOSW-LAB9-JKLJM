@@ -1,11 +1,16 @@
 package edu.eci.dosw.techcup_futbol.model.UsersAndSecurity;
 
+
+import java.util.LinkedHashSet;
+import java.util.Set;
+
 public abstract class User {
     protected String name;
     protected String email;
     protected String password;
     protected int id;
     protected UserRole role;
+    protected Set<UserRole> roles;
 
     public User(int id, String name, String email, String password) {
         this(id, name, email, password, UserRole.PLAYER);
@@ -17,6 +22,10 @@ public abstract class User {
         this.email = email.trim().toLowerCase();
         this.password = password;
         this.role = role;
+        this.roles = new LinkedHashSet<>();
+        if (role != null) {
+            this.roles.add(role);
+        }
     }
 
     public String getName() {
@@ -53,5 +62,18 @@ public abstract class User {
 
     public void setRole(UserRole role) {
         this.role = role;
+        this.roles.clear();
+        if (role != null) {
+            this.roles.add(role);
+        }
+    }
+
+    public Set<UserRole> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<UserRole> roles) {
+        this.roles = roles == null ? new LinkedHashSet<>() : new LinkedHashSet<>(roles);
+        this.role = this.roles.stream().findFirst().orElse(null);
     }
 }
