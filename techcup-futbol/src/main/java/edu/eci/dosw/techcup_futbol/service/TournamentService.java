@@ -11,7 +11,6 @@ import edu.eci.dosw.techcup_futbol.dtos.TournamentCreateDTO;
 import edu.eci.dosw.techcup_futbol.entity.TournamentEntity;
 import edu.eci.dosw.techcup_futbol.mapper.TournamentMapper;
 import edu.eci.dosw.techcup_futbol.model.Competences.Tournament;
-import edu.eci.dosw.techcup_futbol.model.UsersAndSecurity.Organizer;
 import edu.eci.dosw.techcup_futbol.repository.TournamentRepository;
 
 @Service
@@ -30,9 +29,7 @@ public class TournamentService {
     public Tournament createTournament(TournamentCreateDTO dto) {
         logger.info("Starting tournament creation with name: {}", dto.getName());
 
-        Organizer organizer = new Organizer(1, "Carlos Admin", "carlos@eci.edu", "password123");
-
-        Tournament newTournament = organizer.createTournament(
+        Tournament newTournament = new Tournament(
                 dto.getName(),
                 dto.getStartDate(),
                 dto.getEndDate(),

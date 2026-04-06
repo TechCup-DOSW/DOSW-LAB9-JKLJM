@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.stereotype.Service;
 
 import edu.eci.dosw.techcup_futbol.dtos.RegisterUserDTO;
@@ -24,9 +25,9 @@ public class UserRegistrationService {
     private final RoleRepository roleRepository;
 
     @Autowired
-    public UserRegistrationService(UserRepository userRepository, RoleRepository roleRepository) {
+    public UserRegistrationService(UserRepository userRepository, ObjectProvider<RoleRepository> roleRepositoryProvider) {
         this.userRepository = userRepository;
-        this.roleRepository = roleRepository;
+        this.roleRepository = roleRepositoryProvider.getIfAvailable();
     }
 
     public UserRegistrationService(UserRepository userRepository) {

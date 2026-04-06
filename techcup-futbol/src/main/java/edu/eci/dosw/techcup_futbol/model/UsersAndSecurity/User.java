@@ -1,10 +1,12 @@
 package edu.eci.dosw.techcup_futbol.model.UsersAndSecurity;
 
 
+import java.util.Collections;
+import java.util.EnumSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-public abstract class User {
+public class User {
     protected String name;
     protected String email;
     protected String password;
@@ -69,11 +71,43 @@ public abstract class User {
     }
 
     public Set<UserRole> getRoles() {
-        return roles;
+        return Collections.unmodifiableSet(roles);
     }
 
     public void setRoles(Set<UserRole> roles) {
         this.roles = roles == null ? new LinkedHashSet<>() : new LinkedHashSet<>(roles);
+        this.role = this.roles.stream().findFirst().orElse(null);
+    }
+
+    public Set<Permission> getPermissions() {
+        Set<Permission> permissions = EnumSet.noneOf(Permission.class);
+        for (UserRole userRole : roles) {
+            permissions.addAll(userRole.getPermissions());
+        }
+        return Collections.unmodifiableSet(permissions);
+    }
+
+    public boolean hasRole(UserRole role) {
+        return role != null && roles.contains(role);
+    }
+
+    public boolean hasPermission(Permission permission) {
+        return permission != null && getPermissions().contains(permission);
+    }
+
+    public void addRole(UserRole role) {
+        if (role == null) {
+            return;
+        }
+        roles.add(role);
+        this.role = this.roles.stream().findFirst().orElse(null);
+    }
+
+    public void removeRole(UserRole role) {
+        if (role == null) {
+            return;
+        }
+        roles.remove(role);
         this.role = this.roles.stream().findFirst().orElse(null);
     }
 }

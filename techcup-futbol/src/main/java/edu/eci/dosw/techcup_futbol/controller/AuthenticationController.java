@@ -1,6 +1,7 @@
 package edu.eci.dosw.techcup_futbol.controller;
 
 import java.util.Map;
+import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -45,12 +46,24 @@ public class AuthenticationController {
     public ResponseEntity<Map<String, Object>> login(@Valid @RequestBody LoginDTO credentials) {
         UserEntity authenticatedUser = authenticationService.authenticate(credentials);
 
+        List<String> roles = authenticatedUser.getRoles().stream()
+            .map(role -> role.getName())
+            .sorted()
+            .toList();
+
+        List<String> permissions = authenticatedUser.getPermissions().stream()
+            .map(permission -> permission.getName())
+            .sorted()
+            .toList();
+
         return ResponseEntity.ok(Map.of(
                 "authenticated", true,
                 "message", "Inicio de sesion exitoso",
                 "user", Map.of(
                         "id", authenticatedUser.getId(),
                         "name", authenticatedUser.getName(),
-                        "email", authenticatedUser.getEmail())));
+                "email", authenticatedUser.getEmail(),
+                "roles", roles,
+                "permissions", permissions)));
     }
 }

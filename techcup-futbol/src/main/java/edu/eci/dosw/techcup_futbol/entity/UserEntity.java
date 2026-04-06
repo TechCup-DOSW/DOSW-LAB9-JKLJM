@@ -12,6 +12,7 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -41,13 +42,16 @@ public class UserEntity {
     @Column(name = "password", nullable = false)
     private String password;
 
-            @ManyToMany(fetch = FetchType.EAGER, cascade = { CascadeType.MERGE })
-        @JoinTable(
+        @ManyToMany(fetch = FetchType.EAGER, cascade = { CascadeType.MERGE })
+    @JoinTable(
             name = "users_roles",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id")
-        )
-        private Set<RoleEntity> roles = new LinkedHashSet<>();
+    )
+    private Set<RoleEntity> roles = new LinkedHashSet<>();
+
+        @Transient
+        private UserRole legacyRole;
 
     public UserEntity() {
     }
@@ -56,7 +60,7 @@ public class UserEntity {
         this.name = name;
         this.email = normalizeEmail(email);
         this.password = password;
-        setRole(role);
+        this.legacyRole = role;
     }
 
     public UserEntity(String name, String email, String password, Set<RoleEntity> roles) {
@@ -116,6 +120,10 @@ public class UserEntity {
      * Compatibility helper for single-role code paths.
      */
     public UserRole getRole() {
+        if (legacyRole != null) {
+            return legacyRole;
+        }
+
         if (roles == null || roles.isEmpty()) {
             return null;
         }
@@ -136,12 +144,7 @@ public class UserEntity {
      * Compatibility helper for single-role code paths.
      */
     public void setRole(UserRole role) {
-        this.roles.clear();
-        if (role != null) {
-            RoleEntity roleEntity = new RoleEntity();
-            roleEntity.setName(role.name());
-            this.roles.add(roleEntity);
-        }
+        this.legacyRole = role;
     }
 
     /**
