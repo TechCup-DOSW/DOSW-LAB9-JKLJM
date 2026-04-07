@@ -17,3 +17,9 @@
   
 ![prueba 3](https://github.com/user-attachments/assets/24a4bc4d-7a04-48cd-a50c-fad3863641d0)
 
+---
+
+- Evidencia solicitada: login exitoso en Postman con token JWT
+
+![captura-login-postman](techcup-futbol/src/main/resources/docs/images/captura-login-postman.png)
+
