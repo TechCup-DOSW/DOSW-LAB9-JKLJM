@@ -2,6 +2,21 @@
 ---
 # ENTITY SELECTION (STEP 3)
 
+
+http://localhost:8080/api/users
+
+¿El servidor está corriendo?
+
+Ejemplo según tecnología:
+
+Java (Spring Boot): mvn spring-boot:run
+
+swagger
+
+http://localhost:8080/swagger-ui.html
+http://localhost:8080/swagger-ui/index.html
+
+
 Seleccionamos 3 entidades que cumplan con Autenticacion, Usuarios y Torneo:  
 
 * User  
