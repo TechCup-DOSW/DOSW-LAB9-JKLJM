@@ -8,6 +8,7 @@ import edu.eci.dosw.techcup_futbol.repository.UserRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Set;
@@ -16,6 +17,7 @@ import java.util.Set;
 public class DataInitializer {
 
     @Bean
+    @ConditionalOnBean({UserRepository.class, RoleRepository.class, PasswordEncoder.class})
     public CommandLineRunner loadInitialUser(
             UserRepository userRepository,
             RoleRepository roleRepository,
