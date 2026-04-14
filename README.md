@@ -1,9 +1,31 @@
 # DOSW-LAB9-JKLJM
 ---
-# POINT 2
-- The first step where Postman should not allow authorization without requesting the password and username
-  
-![prueba 1](https://github.com/user-attachments/assets/7edbf61d-7cc6-4181-adb6-cd9a0877b60b)
+# ENTITY SELECTION (STEP 3)
+
+
+http://localhost:8080/api/users
+
+¿El servidor está corriendo?
+
+Ejemplo según tecnología:
+
+Java (Spring Boot): mvn spring-boot:run
+
+swagger
+
+http://localhost:8080/swagger-ui.html
+http://localhost:8080/swagger-ui/index.html
+
+
+Seleccionamos 3 entidades que cumplan con Autenticacion, Usuarios y Torneo:  
+
+* User  
+
+* Tournament  
+
+* Team   
+
+**UserEntity**  es crítica para autenticación y autorización, almacenando credenciales y permisos de usuario. **TournamentEntity** define el evento central del negocio con configuración global, fechas, límites y costos. **TeamEntity** actúa como nexo relacional: vincula usuarios (organizadores) con torneos específicos, registrando participaciones, pagos y permitiendo que múltiples equipos de diferentes usuarios compitan en un mismo torneo. Juntas forman la estructura completa: usuarios que crean y organizan torneos, mediante equipos que participan en ellos (relación 1:N entre usuario-equipo y N:1 entre equipo-torneo). Sin estas tres, no hay identidad, evento ni participación.
 
 ---
 
@@ -23,3 +45,15 @@
 
 ![captura-login-postman](techcup-futbol/src/main/resources/docs/images/captura-login-postman.png)
 
+```xml
+<dependency>
+	<groupId>org.springframework.boot</groupId>
+	<artifactId>spring-boot-data-jpa-test</artifactId>
+	<scope>test</scope>
+</dependency>
+```
+
+
+despliegue 
+
+<img width="1894" height="936" alt="image" src="https://github.com/user-attachments/assets/e3e85b56-406b-48f7-9a19-e5ebfc74128a" />
