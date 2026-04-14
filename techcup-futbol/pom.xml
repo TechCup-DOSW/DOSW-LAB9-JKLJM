@@ -74,6 +74,13 @@
             <scope>runtime</scope>
         </dependency>
 
+        <!-- Microsoft SQL Server JDBC Driver - Azure SQL Database -->
+        <dependency>
+            <groupId>com.microsoft.sqlserver</groupId>
+            <artifactId>mssql-jdbc</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+
         <!-- H2 In-Memory Database - Development and testing -->
         <dependency>
             <groupId>com.h2database</groupId>
