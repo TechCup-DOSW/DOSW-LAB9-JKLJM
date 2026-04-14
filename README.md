@@ -85,3 +85,8 @@ Dependencia agregada para pruebas JPA en Spring Boot 4:
 	<scope>test</scope>
 </dependency>
 ```
+
+
+despliegue 
+
+<img width="1894" height="936" alt="image" src="https://github.com/user-attachments/assets/e3e85b56-406b-48f7-9a19-e5ebfc74128a" />
