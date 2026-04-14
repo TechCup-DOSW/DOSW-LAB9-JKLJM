@@ -1,9 +1,15 @@
 package edu.eci.dosw.techcup_futbol.DtosTest;
 
 import edu.eci.dosw.techcup_futbol.dtos.ApiErrorResponseDTO;
+import edu.eci.dosw.techcup_futbol.dtos.LoginDTO;
 import edu.eci.dosw.techcup_futbol.dtos.PlayerRegistrationDTO;
+import edu.eci.dosw.techcup_futbol.dtos.RegisterUserDTO;
 import edu.eci.dosw.techcup_futbol.dtos.TableDTO;
 import edu.eci.dosw.techcup_futbol.dtos.TeamDTO;
+import edu.eci.dosw.techcup_futbol.dtos.UserResponseDTO;
+import edu.eci.dosw.techcup_futbol.document.ImageDocument;
+import edu.eci.dosw.techcup_futbol.entity.PermissionEntity;
+import edu.eci.dosw.techcup_futbol.entity.RoleEntity;
 import edu.eci.dosw.techcup_futbol.entity.TournamentEntity;
 import edu.eci.dosw.techcup_futbol.entity.UserEntity;
 import edu.eci.dosw.techcup_futbol.model.UsersAndSecurity.Rol;
@@ -12,8 +18,12 @@ import edu.eci.dosw.techcup_futbol.model.UsersAndSecurity.UserRole;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -154,5 +164,120 @@ class DtoEntityCoverageTest {
         assertEquals("new@mail.com", user.getEmail());
         assertEquals("newpass", user.getPassword());
         assertEquals(UserRole.ORGANIZER, user.getRole());
+    }
+
+    @Test
+    void shouldCoverUserResponseDtoConstructorsAndLists() {
+        UserResponseDTO defaultDto = new UserResponseDTO();
+        defaultDto.setId(7L);
+        defaultDto.setName("Ana");
+        defaultDto.setEmail("ana@mail.com");
+        defaultDto.setRoles(new ArrayList<>(List.of("ADMIN")));
+        defaultDto.setPermissions(new ArrayList<>(List.of("USERS_READ")));
+
+        assertEquals(7L, defaultDto.getId());
+        assertEquals("Ana", defaultDto.getName());
+        assertEquals("ana@mail.com", defaultDto.getEmail());
+        assertEquals(1, defaultDto.getRoles().size());
+        assertEquals(1, defaultDto.getPermissions().size());
+
+        UserResponseDTO withoutLists = new UserResponseDTO(10L, "Bob", "bob@mail.com", null, null);
+        assertEquals(0, withoutLists.getRoles().size());
+        assertEquals(0, withoutLists.getPermissions().size());
+
+        UserResponseDTO withLists = new UserResponseDTO(11L, "Carl", "carl@mail.com",
+                List.of("ORGANIZER"), List.of("TOURNAMENTS_WRITE"));
+        assertEquals("ORGANIZER", withLists.getRoles().getFirst());
+    }
+
+    @Test
+    void shouldCoverRegisterAndLoginDtos() {
+        RegisterUserDTO registerUserDTO = new RegisterUserDTO();
+        registerUserDTO.setName("Nico");
+        registerUserDTO.setEmail("nico@mail.com");
+        registerUserDTO.setPassword("1234");
+
+        assertEquals("Nico", registerUserDTO.getName());
+        assertEquals("nico@mail.com", registerUserDTO.getEmail());
+        assertEquals("1234", registerUserDTO.getPassword());
+
+        RegisterUserDTO constructedRegister = new RegisterUserDTO("Sara", "sara@mail.com", "abcd");
+        assertEquals("Sara", constructedRegister.getName());
+
+        LoginDTO loginDTO = new LoginDTO();
+        loginDTO.setEmail("user@mail.com");
+        loginDTO.setPassword("secret");
+
+        assertEquals("user@mail.com", loginDTO.getEmail());
+        assertEquals("secret", loginDTO.getPassword());
+
+        LoginDTO constructedLogin = new LoginDTO("x@mail.com", "pass");
+        assertEquals("x@mail.com", constructedLogin.getEmail());
+    }
+
+    @Test
+    void shouldCoverImageDocumentAndSecurityEntities() {
+        Instant now = Instant.parse("2026-01-01T00:00:00Z");
+        ImageDocument document = new ImageDocument("photo.png", "image/png", new byte[] { 1, 2, 3 }, now);
+        document.setId("img-77");
+        document.setFileName("updated.png");
+        document.setContentType("image/webp");
+        document.setData(new byte[] { 9 });
+        document.setUploadedAt(now.plusSeconds(60));
+
+        assertEquals("img-77", document.getId());
+        assertEquals("updated.png", document.getFileName());
+        assertEquals("image/webp", document.getContentType());
+        assertEquals(1, document.getData().length);
+
+        PermissionEntity permissionEntity = new PermissionEntity();
+        permissionEntity.setId(1L);
+        permissionEntity.setName(" users_write ");
+
+        RoleEntity roleEntity = new RoleEntity();
+        roleEntity.setId(2L);
+        roleEntity.setName(" organizer ");
+        roleEntity.setPermissions(new LinkedHashSet<>(Set.of(permissionEntity)));
+
+        assertEquals(1L, permissionEntity.getId());
+        assertEquals("USERS_WRITE", permissionEntity.getName());
+        assertEquals(2L, roleEntity.getId());
+        assertEquals("ORGANIZER", roleEntity.getName());
+        assertEquals(1, roleEntity.getPermissions().size());
+
+        roleEntity.setPermissions(null);
+        assertEquals(0, roleEntity.getPermissions().size());
+    }
+
+    @Test
+    void shouldCoverUserEntityRolesAndPermissionsPaths() {
+        PermissionEntity read = new PermissionEntity();
+        read.setName("USERS_READ");
+        PermissionEntity write = new PermissionEntity();
+        write.setName("USERS_WRITE");
+
+        RoleEntity admin = new RoleEntity();
+        admin.setName("ADMIN");
+        admin.setPermissions(Set.of(read, write));
+
+        UserEntity user = new UserEntity("Test", "test@mail.com", "pwd", Set.of(admin));
+        user.setRole(null);
+
+        assertEquals(UserRole.ADMIN, user.getRole());
+        assertEquals(2, user.getPermissions().size());
+
+        RoleEntity unknown = new RoleEntity();
+        unknown.setName("UNKNOWN_ROLE");
+        user.setRoles(Set.of(unknown));
+
+        assertNull(user.getRole());
+
+        RoleEntity blank = new RoleEntity();
+        blank.setName(" ");
+        user.setRoles(Set.of(blank));
+        assertNull(user.getRole());
+
+        user.setRoles(null);
+        assertNull(user.getRole());
     }
 }

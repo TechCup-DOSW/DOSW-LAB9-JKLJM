@@ -1,20 +1,23 @@
 package edu.eci.dosw.techcup_futbol.UsersAndSecutiryTest;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import edu.eci.dosw.techcup_futbol.model.UsersAndSecurity.Permission;
 import edu.eci.dosw.techcup_futbol.model.UsersAndSecurity.User;
+import edu.eci.dosw.techcup_futbol.model.UsersAndSecurity.UserRole;
 
 class UserTest {
 
-    private DummyUser user;
+    private User user;
 
     @BeforeEach
     void setUp() {
-        // Arrange: Create a concrete dummy user to test base abstract behavior
-        user = new DummyUser(1, "Base User", "BASE@MAIL.COM", "123456");
+        user = new User(1, "Base User", "BASE@MAIL.COM", "123456", UserRole.PLAYER);
     }
 
     // --- Tests for constructor ---
@@ -58,9 +61,23 @@ class UserTest {
         assertEquals(1, user.getId());
     }
 
-    private static class DummyUser extends User {
-        DummyUser(int id, String name, String email, String password) {
-            super(id, name, email, password);
-        }
+    @Test
+    void shouldResolveRoleAndPermissionChecksFromCentralizedUser() {
+        assertTrue(user.hasRole(UserRole.PLAYER));
+        assertTrue(user.hasPermission(Permission.TOURNAMENTS_READ));
+        assertFalse(user.hasPermission(Permission.USERS_WRITE));
+    }
+
+    @Test
+    void shouldAddAndRemoveRolesThroughUnifiedApi() {
+        user.addRole(UserRole.ORGANIZER);
+
+        assertTrue(user.hasRole(UserRole.ORGANIZER));
+        assertTrue(user.hasPermission(Permission.PAYMENTS_REVIEW));
+
+        user.removeRole(UserRole.ORGANIZER);
+
+        assertFalse(user.hasRole(UserRole.ORGANIZER));
+        assertFalse(user.hasPermission(Permission.PAYMENTS_REVIEW));
     }
 }

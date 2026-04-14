@@ -2,8 +2,11 @@ package edu.eci.dosw.techcup_futbol.mapper;
 
 import edu.eci.dosw.techcup_futbol.entity.TeamEntity;
 import edu.eci.dosw.techcup_futbol.entity.UserEntity;
+import edu.eci.dosw.techcup_futbol.entity.RoleEntity;
 import edu.eci.dosw.techcup_futbol.model.Teams.Team;
 import org.mapstruct.Mapper;
+
+import java.util.Set;
 
 @Mapper(componentModel = "spring")
 public interface TeamMapper {
@@ -65,7 +68,9 @@ public interface TeamMapper {
         entity.setName(player.getName());
         entity.setEmail(player.getEmail());
         entity.setPassword(player.getPassword());
-        entity.setRole(player.getRole());
+        RoleEntity playerRole = new RoleEntity();
+        playerRole.setName("PLAYER");
+        entity.setRoles(Set.of(playerRole));
         return entity;
     }
 }

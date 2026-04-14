@@ -29,54 +29,21 @@ Seleccionamos 3 entidades que cumplan con Autenticacion, Usuarios y Torneo:
 
 ---
 
+- Second test now with the username and password that gives us security. It should be noted that we forgot to add the user before running, therefore they don't appear but it does accept it.
+  
+![prueba 2](https://github.com/user-attachments/assets/7e1ff950-7bc3-4efa-a38d-78f26dd250ab)
 
+--- 
 
-# Swagger api tournament
-
-![Swagger](https://github.com/user-attachments/assets/2059a21c-955e-49fb-9991-993b99d8e4d8)
-
-## Swagger - API de autenticacion
-
-Captura 1:
-
-![Swagger Login Vista General](techcup-futbol/src/main/resources/docs/images/api%20login.png)
-
-Captura 2:
-
-![Swagger Login Detalle](techcup-futbol/src/main/resources/docs/images/api.png)
+- Final test where it is with those assigned by us
+  
+![prueba 3](https://github.com/user-attachments/assets/24a4bc4d-7a04-48cd-a50c-fad3863641d0)
 
 ---
 
-# Evidencia UserRepositoryTest
+- Evidencia solicitada: login exitoso en Postman con token JWT
 
-Captura de la ejecucion de pruebas de repositorio:
-
-![UserRepositoryTest BUILD SUCCESS](techcup-futbol/src/main/resources/docs/images/userrepositorytest-success.png)
-
-## Pruebas realizadas
-
-Se ejecutaron las siguientes pruebas en `UserRepositoryTest`:
-
-1. Prueba de guardado: `shouldSaveUser`.
-2. Prueba de consulta: `shouldFindByEmail`.
-3. Prueba de relacion entre entidades: `shouldSaveUserWithTeam`.
-4. Prueba de actualizacion: `shouldUpdateUser`.
-
-## Como se ejecutaron
-
-1. Se corrigio la configuracion de pruebas para Spring Boot 4 (anotacion `DataJpaTest` y dependencia de pruebas JPA en `pom.xml`).
-2. Se ejecuto el test de repositorio con Maven:
-
-```bash
-mvn clean -Dtest=UserRepositoryTest test
-```
-
-3. Se verifico en consola el resultado:
-
-- `BUILD SUCCESS`
-- `Tests run: 4, Failures: 0, Errors: 0, Skipped: 0`
-
-Dependencia agregada para pruebas JPA en Spring Boot 4:
+![captura-login-postman](techcup-futbol/src/main/resources/docs/images/captura-login-postman.png)
 
 ```xml
 <dependency>

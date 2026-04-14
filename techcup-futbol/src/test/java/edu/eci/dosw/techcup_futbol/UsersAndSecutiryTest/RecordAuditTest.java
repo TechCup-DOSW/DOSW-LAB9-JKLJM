@@ -9,17 +9,17 @@ import java.time.LocalDateTime;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import edu.eci.dosw.techcup_futbol.model.UsersAndSecurity.Admin;
 import edu.eci.dosw.techcup_futbol.model.UsersAndSecurity.RecordAudit;
+import edu.eci.dosw.techcup_futbol.model.UsersAndSecurity.User;
+import edu.eci.dosw.techcup_futbol.model.UsersAndSecurity.UserRole;
 
 class RecordAuditTest {
 
-    private Admin actor;
+    private User actor;
 
     @BeforeEach
     void setUp() {
-        // Arrange: Create a user that will trigger audit events
-        actor = new Admin(1, "Audit Actor", "actor@mail.escuelaing.edu.co", "123456");
+        actor = new User(1, "Audit Actor", "actor@mail.escuelaing.edu.co", "123456", UserRole.ADMIN);
     }
 
     // --- Tests for createAudit(String action, User user) ---
