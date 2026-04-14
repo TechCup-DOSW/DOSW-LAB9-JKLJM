@@ -26,9 +26,11 @@ jobs:
           cache: maven
 
       - name: Make Maven wrapper executable
+        working-directory: techcup-futbol
         run: chmod +x mvnw
 
       - name: Compile with Maven
+        working-directory: techcup-futbol
         run: ./mvnw -B -ntp clean compile
 
   test:
@@ -48,16 +50,18 @@ jobs:
           cache: maven
 
       - name: Make Maven wrapper executable
+        working-directory: techcup-futbol
         run: chmod +x mvnw
 
       - name: Verify (tests + coverage)
+        working-directory: techcup-futbol
         run: ./mvnw -B -ntp verify
 
       - name: Upload JAR artifact
         uses: actions/upload-artifact@v4
         with:
           name: app-jar
-          path: target/*.jar
+          path: techcup-futbol/target/*.jar
           if-no-files-found: error
 
   deploy:
